@@ -18,7 +18,7 @@ const MovieCards: React.FC<Props> = ({ title, category, type }) => {
   return (
     <div className="w-full flex bg-zinc-900 flex-col gap-2">
 
-      <div className="font-semibold text-2xl text-zinc-50 font-[satoshi] px-20 mt-10">
+      <div className="font-semibold text-4xl text-zinc-50 font-[satoshi] px-8 mt-10">
         {title}
       </div>
 

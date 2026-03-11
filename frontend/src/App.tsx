@@ -8,7 +8,7 @@ const App = () => {
          <Navbar />
       </div>
 
-      <div className="ml-36">
+      <div className="ml-44">
         <MainRoutes />
       </div>
 

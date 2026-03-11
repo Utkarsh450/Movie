@@ -15,7 +15,6 @@ const links = [
   { to: "/search", icon: <FiSearch />, label: "Search" },
   { to: "/tv", icon: <FiTv />, label: "TV Shows" },
   { to: "/movies", icon: <FiFilm />, label: "Movies" },
-  { to: "/trending", icon: <FiTrendingUp />, label: "Trending" },
   { to: "/videos", icon: <FiVideo />, label: "Videos" },
   { to: "/people", icon: <FiGrid />, label: "People" },
   { to: "/profile", icon: <FiUser />, label: "Profile" }
@@ -23,13 +22,13 @@ const links = [
 
 const Navbar: React.FC = () => {
   return (
-    <div className="group fixed top-0 left-0 h-screen w-36 z-20 hover:w-64 bg-zinc-900 flex flex-col items-center py-20 gap-10 transition-all duration-300">
+    <div className="group fixed top-0 left-0 h-screen w-44 z-20 hover:w-64 bg-zinc-900 flex flex-col items-center py-52 gap-14 transition-all duration-300">
 
       {links.map((item) => (
         <Link
           key={item.to}
           to={item.to}
-          className="flex items-center w-full text-zinc-100 hover:text-white text-2xl px-6"
+          className="flex items-center w-full text-zinc-100 hover:text-white text-2xl px-16"
         >
           <div className="min-w-6 flex justify-center">
             {item.icon}

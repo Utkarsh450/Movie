@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import useTrendingTV from "../hooks/useTrendingTV";
 import MovieCards from "../components/MovieCards";
 import type { RootState } from "../redux/store";
+import usePopularTV from "../hooks/usePopularTV";
+import useTopRatedTV from "../hooks/useTopRatedTV";
 
 interface TVShow {
   id: number;
@@ -17,6 +19,8 @@ interface TVShow {
 const TvShows = () => {
 
   useTrendingTV();
+  usePopularTV();
+  useTopRatedTV();
 
   const trending = useSelector(
     (state: RootState) => state.tv.trending
@@ -41,7 +45,7 @@ const TvShows = () => {
   }, [trending]);
 
   return (
-    <div className="w-full flex flex-col bg-black">
+    <div className="w-full flex font-[satoshi] flex-col bg-black">
 
       {show && (
 
@@ -52,7 +56,7 @@ const TvShows = () => {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"></div>
 
           <div className="relative z-10 h-full flex items-center px-20 text-white">
 
@@ -88,6 +92,7 @@ const TvShows = () => {
       {/* TV Rows */}
       <MovieCards title="Trending Shows" category="trending" type="tv" />
       <MovieCards title="Popular Shows" category="popular" type="tv" />
+      <MovieCards title="Top Rated Shows" category="topRated" type="tv" />
 
     </div>
   );

@@ -28,6 +28,8 @@ const MainRoutes: React.FC = () => {
       <Route path="/admin" element={<AdminDashboard />} />
     </Routes>
   );
+  
 };
+
 
 export default MainRoutes;
