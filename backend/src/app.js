@@ -7,10 +7,10 @@ const authRoutes = require("../src/routes/auth.routes")
 app.use(express.json());
 app.use(CookieParser());
 
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+// const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
 
 app.use(cors({
-    origin: allowedOrigin,
+    origin: "*",
     credentials: true
 }));
 
