@@ -53,7 +53,6 @@ const Search = () => {
   }, [debouncedValue])
 
 
-  /* FULL PAGE LOADER (first load popular movies) */
 
   if (!query && movies.length === 0) {
     return (
@@ -68,7 +67,6 @@ const Search = () => {
 
     <div className="flex flex-col gap-2 font-[satoshi] bg-zinc-900 min-h-screen">
 
-      {/* SEARCH INPUT */}
 
       <div className="pl-10 mt-18">
 
@@ -135,7 +133,6 @@ const Search = () => {
       )}
 
 
-      {/* POPULAR MOVIES */}
 
       {!query && (
 

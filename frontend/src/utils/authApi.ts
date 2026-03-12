@@ -11,7 +11,7 @@ export interface AuthResponse {
 }
 
 const authApi = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/api/auth",
+  baseURL: import.meta.env.VITE_BACKEND_URL || "https://movie-73zf.onrender.com",
   withCredentials: true,
 });
 
