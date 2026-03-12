@@ -10,7 +10,7 @@ app.use(CookieParser());
 // const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
 
 app.use(cors({
-    origin: "https://movie-oup5.vercel.app",
+    origin: "https://movie-oup5.vercel.app/",
     credentials: true
 }));
 

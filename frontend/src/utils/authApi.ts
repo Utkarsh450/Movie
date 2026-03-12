@@ -11,7 +11,7 @@ export interface AuthResponse {
 }
 
 const authApi = axios.create({
-  baseURL: "https://movie-73zf.onrender.com",
+  baseURL: "https://movie-73zf.onrender.com/api/auth",
   withCredentials: true,
 });
 
@@ -33,5 +33,6 @@ export const meRequest = async () => {
 export const logoutRequest = async () => {
   await authApi.get("/logout");
 };
+
 
 export default authApi;
