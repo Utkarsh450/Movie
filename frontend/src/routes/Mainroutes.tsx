@@ -1,35 +1,53 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import Home from "../pages/Home";
-import Movies from "../pages/Movies";
-import TvShows from "../pages/TvShows";
-import People from "../pages/People";
-import MovieDetails from "../pages/MovieDetails";
-import Favorites from "../pages/Favorites";
-import Login from "../pages/Login";
-import Signup from "../pages/Signup";
-import AdminDashboard from "../pages/AdminDashboard";
+import Search from "../pages/Search";
+import History from "../pages/History";
+import Loader from "../components/Loader";
+import ProtectedRoute from "../components/ProtectedRoute";
+import GuestRoute from "../components/GuestRoute";
+const Movies = lazy(() => import("../pages/Movies"))
+const TvShows = lazy(() => import("../pages/TvShows"))
+const Favorites = lazy(() => import("../pages/Favorites"))
+const MovieDetails = lazy(() => import("../pages/MovieDetails"))
+const Login = lazy(() => import("../pages/Login"))
+const Signup = lazy(() => import("../pages/Signup"))
+const TvDetails = lazy(() => import("../pages/TvDetails"))
+const AdminDashboard = lazy(() => import("../pages/AdminDashboard"))
 
 const MainRoutes: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+  <Suspense fallback={<Loader/>}>
 
-      <Route path="/movies" element={<Movies />} />
-      <Route path="/tv" element={<TvShows />} />
-      <Route path="/people" element={<People />} />
+<Routes>
+<Route element={<GuestRoute />}>
+  <Route path="/login" element={<Login />} />
+  <Route path="/signup" element={<Signup />} />
+</Route>
 
-      <Route path="/movie/:id" element={<MovieDetails />} />
+<Route path="/" element={<Home />} />
+<Route path="/movies" element={<Movies />} />
+<Route path="/tv" element={<TvShows />} />
 
-      <Route path="/favorites" element={<Favorites />} />
+<Route path="/movie/:id" element={<MovieDetails />} />
+<Route path="/explore" element={<Search />} />
+<Route path="/tv/:id" element={<TvDetails />} />
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+<Route element={<ProtectedRoute />}>
+  <Route path="/favorites" element={<Favorites />} />
+  <Route path="/history" element={<History />} />
+  <Route path="/admin" element={<AdminDashboard />} />
+</Route>
 
-      <Route path="/admin" element={<AdminDashboard />} />
-    </Routes>
+<Route path="*" element={<Navigate to="/" replace />} />
+
+</Routes>
+
+</Suspense>
   );
   
 };
+
 
 
 export default MainRoutes;

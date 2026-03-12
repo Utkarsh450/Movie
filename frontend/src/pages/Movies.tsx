@@ -4,6 +4,8 @@ import { type RootState } from "../redux/store"
 import useInfinite from "../hooks/useInfinite"
 import InfiniteScroll from "react-infinite-scroll-component";
 import usePopularMovies from "../hooks/usePopularMovies";
+import { Link } from "react-router-dom";
+import Loader from "../components/Loader";
 
 interface Movie {
   id: number
@@ -43,6 +45,15 @@ const Movies = () => {
     }
 
   }, [popularMovies])
+  if (movies.length === 0 || popularMovies.length === 0) {
+
+    return (
+      <div className="flex items-center justify-center h-screen bg-zinc-900">
+        <Loader />
+      </div>
+    )
+
+  }
 
   return (
 
@@ -53,7 +64,7 @@ const Movies = () => {
 
         <div className="relative w-full h-[90vh]">
 
-          <img
+          <img loading="lazy"
             src={`https://image.tmdb.org/t/p/original/${heroMovie.backdrop_path}`}
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -104,17 +115,18 @@ const Movies = () => {
 
           {movies.map((movie: Movie) => (
 
-            <div
+            <Link
               key={movie.id}
+              to={`/movie/${movie.id}`}
               className="rounded-xl overflow-hidden hover:scale-105 transition cursor-pointer"
             >
 
-              <img
+              <img loading="lazy"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 className="w-full h-full object-cover"
               />
 
-            </div>
+            </Link>
 
           ))}
 

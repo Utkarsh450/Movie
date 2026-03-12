@@ -1,133 +1,135 @@
 import { useEffect, useState } from "react";
 import MovieCards from "../components/MovieCards";
 import { useSelector } from "react-redux";
+
 import useTrendingMovies from "../hooks/useTrendingMovies";
 import usePopularMovies from "../hooks/usePopularMovies";
 import useTopRatedMovies from "../hooks/useTopRatedMovies";
-
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
-import type { RootState } from "../redux/store";
 import useActionMovies from "../hooks/useActionMovies";
 import useComedyMovies from "../hooks/useComedyMovies";
 
+import type { RootState } from "../redux/store";
+import Loader from "../components/Loader";
+
 interface Movie {
-  adult: boolean;
   backdrop_path: string;
-  genre_ids: number[];
   id: number;
-  media_type?: string;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  release_date: string;
   title: string;
-  video: boolean;
+  overview: string;
   vote_average: number;
-  vote_count: number;
+  release_date: string;
 }
 
 const Home: React.FC = () => {
 
- // fetch movies
+  // fetch movies
   useTrendingMovies();
   usePopularMovies();
   useTopRatedMovies();
   useUpcomingMovies();
-  
   useActionMovies();
   useComedyMovies();
 
-  const trending = useSelector(
-    (state: RootState) => state.movies.trending
-  );
-  console.log(trending);
-  
+  // redux state
+  const {
+    trending,
+    popular,
+    topRated,
+  } = useSelector((state: RootState) => state.movies);
 
   const [movie, setHeroMovie] = useState<Movie | null>(null);
 
-  // pick random banner
+  // hero banner selection
   useEffect(() => {
 
-  if (trending.length > 0) {
+    if (trending.length === 0) return;
 
-  const filteredMovies = trending.filter(
-    (movie: Movie) => movie.backdrop_path
-  );
+    const filtered = trending.filter((m: Movie) => m.backdrop_path);
 
-  const randomMovie =
-    filteredMovies[Math.floor(Math.random() * filteredMovies.length)];
+    const random =
+      filtered[Math.floor(Math.random() * filtered.length)];
 
-  setHeroMovie(randomMovie);
-}
+    setHeroMovie(random);
 
   }, [trending]);
+
+  // global loading check
+  const isLoading =
+    trending.length === 0 ||
+    popular.length === 0 ||
+    topRated.length === 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-zinc-900">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col">
 
-      {/* HERO SECTION */}
-     {movie && (
-  <div className="relative w-full h-225">
+      {/* HERO */}
+      {movie ? (
+        <div className="relative w-full h-[85vh]">
 
-    {/* Background Image */}
-   <img
-  src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-  alt={movie.title}
-  className="absolute inset-0 w-full h-full object-cover"
-/>
+          <img
+            loading="lazy"
+            src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
+            alt={movie.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
 
-    {/* Gradient Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-r to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent" />
 
-    {/* Content */}
-    <div className="relative z-10 h-full flex items-center px-36 text-white font-[satoshi]">
+          <div className="relative z-10 h-full flex items-center px-36 text-white">
 
-      <div className="max-w-2xl flex flex-col gap-4">
+            <div className="max-w-2xl flex flex-col gap-4">
 
-        <h1 className="text-7xl font-semibold">
-          {movie.title}
-        </h1>
+              <h1 className="text-6xl font-semibold">
+                {movie.title}
+              </h1>
 
-        <p className="text-blue-400 text-lg">
-          ⭐ {movie.vote_average.toFixed(1)} / 10
-        </p>
+              <p className="text-blue-400">
+                ⭐ {movie.vote_average.toFixed(1)} / 10
+              </p>
 
-        <p className="text-gray-300 text-lg">
-          {movie.release_date}
-        </p>
+              <p className="text-gray-300">
+                {movie.release_date}
+              </p>
 
-        <p className="text-gray-300 text-2xl leading-relaxed">
-          {movie.overview.slice(0, 200)}...
-        </p>
+              <p className="text-gray-300 text-lg">
+                {movie.overview.slice(0, 200)}...
+              </p>
 
-        <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-4">
 
-          <button className="px-28 py-8 rounded-lg bg-gradient-to-r from-blue-500 text-2xl to-pink-500 font-semibold hover:scale-105 transition">
-            ▶ Watch Now
-          </button>
+                <button className="px-10 py-4 rounded-lg bg-gradient-to-r from-blue-500 to-pink-500 font-semibold hover:scale-105 transition">
+                  ▶ Watch Now
+                </button>
 
-          <button className="px-5 py-3 rounded-lg bg-zinc-200/30 backdrop-blur text-xl hover:bg-zinc-200/40 transition">
-            +
-          </button>
+                <button className="px-5 py-4 rounded-lg bg-zinc-200/20 backdrop-blur hover:bg-zinc-200/30">
+                  +
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
-
-      </div>
-
-    </div>
-
-  </div>
-)}
+      ) : <Loader/>}
 
       {/* MOVIE ROWS */}
-    <MovieCards title="Trending Movies" category="trending" type="movie" />
-<MovieCards title="Popular Movies" category="popular" type="movie" />
-<MovieCards title="Top Rated Movies" category="topRated" type="movie" />
-<MovieCards title="Action Movies" category="action" type="movie" />
-<MovieCards title="Comedy Movies" category="comedy" type="movie" />
-<MovieCards title="Upcoming Movies" category="upcoming" type="movie" />
+      <MovieCards title="Trending Movies" category="trending" type="movie" />
+      <MovieCards title="Popular Movies" category="popular" type="movie" />
+      <MovieCards title="Top Rated Movies" category="topRated" type="movie" />
+      <MovieCards title="Action Movies" category="action" type="movie" />
+      <MovieCards title="Comedy Movies" category="comedy" type="movie" />
+      <MovieCards title="Upcoming Movies" category="upcoming" type="movie" />
 
     </div>
   );

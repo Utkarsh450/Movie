@@ -16,7 +16,7 @@ const initialState: MovieState = {
   upcoming: [],
 
   action: [],
-  comedy: []
+  comedy: [],
 };
 
 const movieSlice = createSlice({

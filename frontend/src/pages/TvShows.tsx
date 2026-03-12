@@ -51,7 +51,7 @@ const TvShows = () => {
 
         <div className="relative w-full h-[80vh]">
 
-          <img
+          <img loading="lazy"
             src={`https://image.tmdb.org/t/p/original${show.backdrop_path}`}
             className="absolute inset-0 w-full h-full object-cover"
           />

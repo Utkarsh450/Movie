@@ -1,4 +1,62 @@
 @import "tailwindcss";
+
+:root {
+  color: #f8fafc;
+  background: #020617;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.08), transparent 22%),
+    linear-gradient(180deg, #020617 0%, #000000 100%);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+
+.loader {
+  width: 70px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+
+  background: conic-gradient(
+    transparent 0deg 170deg,
+    #ff2da0 200deg,
+    #9b4dff 240deg,
+    #00c6ff 300deg,
+    transparent 330deg
+  );
+
+  /* ring thickness */
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 6px),
+    #000 0
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 6px),
+    #000 0
+  );
+
+  animation: spin 0.85s linear infinite;
+
+  /* subtle glow */
+  filter: drop-shadow(0 0 6px rgba(0,198,255,0.4));
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

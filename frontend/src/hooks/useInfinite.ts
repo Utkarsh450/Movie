@@ -47,7 +47,7 @@ const useInfiniteMovies = () => {
     fetchMovies();
   }, []);
 
-  return { movies, fetchMovies, hasMore };
+  return { movies, setMovies, fetchMovies, hasMore };
 };
 
 export default useInfiniteMovies;
