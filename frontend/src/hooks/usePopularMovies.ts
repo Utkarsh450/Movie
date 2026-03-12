@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useEffectEvent } from "react";
 import { useDispatch } from "react-redux";
 import api from "../utils/axiosConfig/axiosConf";
 import { setPopular } from "../redux/slices/movieSlice";
@@ -9,17 +9,17 @@ const usePopularMovies = () => {
 
   const dispatch = useDispatch();
 
-  const getPopularMovies = async () => {
+  const getPopularMovies = useEffectEvent(async () => {
 
     const res = await api.get(
       `/movie/popular?api_key=${API_KEY}`
     );
 
     dispatch(setPopular(res.data.results));
-  };
+  });
 
   useEffect(() => {
-    getPopularMovies();
+    void getPopularMovies();
   }, []);
 
 };

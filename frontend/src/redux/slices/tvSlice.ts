@@ -1,4 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { MediaSummary } from "../../types/media";
+
+interface TvState {
+  trending: MediaSummary[];
+  popular: MediaSummary[];
+  topRated: MediaSummary[];
+  airingToday: MediaSummary[];
+}
 
 const tvSlice = createSlice({
   name: "tv",
@@ -7,7 +15,7 @@ const tvSlice = createSlice({
     popular: [],
     topRated: [],
     airingToday: []
-  },
+  } as TvState,
   reducers: {
 
     addTrendingTV: (state, action) => {

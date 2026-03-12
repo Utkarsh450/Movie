@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import { authFail, authStart, authSuccess, clearAuthError } from "../redux/authSlice";
 import type { RootState } from "../redux/store";
 import { registerRequest } from "../utils/authApi";
@@ -32,8 +33,11 @@ const Signup = () => {
 
       dispatch(authSuccess(data));
       navigate("/", { replace: true });
-    } catch (err: any) {
-      dispatch(authFail(err?.response?.data?.msg || "Unable to create account"));
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.msg
+        : null;
+      dispatch(authFail(message || "Unable to create account"));
     }
   };
 

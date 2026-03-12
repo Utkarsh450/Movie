@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import { authFail, authStart, authSuccess, clearAuthError } from "../redux/authSlice";
 import type { RootState } from "../redux/store";
 import { loginRequest } from "../utils/authApi";
@@ -28,8 +29,11 @@ const Login = () => {
 
       dispatch(authSuccess(data));
       navigate(redirectPath, { replace: true });
-    } catch (err: any) {
-      dispatch(authFail(err?.response?.data?.msg || "Unable to login"));
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.msg
+        : null;
+      dispatch(authFail(message || "Unable to login"));
     }
   };
 

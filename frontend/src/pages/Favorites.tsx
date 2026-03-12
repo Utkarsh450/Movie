@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import {type RootState } from "../redux/store"
 import { toggleFavorite } from "../redux/slices/favorites"
 import { Link } from "react-router-dom"
+import type { MediaSummary } from "../types/media"
 
 const Favorites = () => {
 
@@ -29,7 +30,7 @@ const Favorites = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
 
-        {favorites.map((item:any)=>(
+        {favorites.map((item: MediaSummary & { media_type: "movie" | "tv" })=>(
 
           <div
             key={item.id}

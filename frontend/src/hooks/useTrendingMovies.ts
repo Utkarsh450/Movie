@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useEffectEvent } from "react";
 import { useDispatch } from "react-redux";
 import axios from "../utils/axiosConfig/axiosConf";
 import { setTrending } from "../redux/slices/movieSlice";
@@ -6,7 +6,7 @@ const useTrendingMovies = () => {
 
   const dispatch = useDispatch();
 
-  const getTrendingMovies = async () => {
+  const getTrendingMovies = useEffectEvent(async () => {
     try {
 
       const res = await axios.get(
@@ -18,10 +18,10 @@ const useTrendingMovies = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  });
 
   useEffect(() => {
-    getTrendingMovies();
+    void getTrendingMovies();
   }, []);
 
 };

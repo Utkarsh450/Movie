@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { MediaSummary } from "../../types/media";
 
 interface MovieState {
-  trending: any[];
-  popular: any[];
-  topRated: any[];
-  upcoming: any[];
-  action: any[];
-  comedy: any[];
+  trending: MediaSummary[];
+  popular: MediaSummary[];
+  topRated: MediaSummary[];
+  upcoming: MediaSummary[];
+  action: MediaSummary[];
+  comedy: MediaSummary[];
 }
 
 const initialState: MovieState = {

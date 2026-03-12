@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
 interface HistoryItem {
   id: number
-  poster_path: string
+  poster_path: string | null
   title?: string
   name?: string
   media_type: "movie" | "tv"

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom"
 import api from "../utils/axiosConfig/axiosConf"
 import Loader from "../components/Loader"
+import type { CastMember, Genre, MediaDetails, MediaSummary } from "../types/media"
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -9,40 +10,38 @@ const TvDetails = () => {
 
   const { id } = useParams()
 
-  const [show, setShow] = useState<any>(null)
-  const [cast, setCast] = useState<any[]>([])
-  const [similar, setSimilar] = useState<any[]>([])
-
-  const fetchShow = async () => {
-
-    try {
-
-      const showRes = await api.get(
-        `/tv/${id}?api_key=${API_KEY}`
-      )
-
-      setShow(showRes.data)
-
-      const castRes = await api.get(
-        `/tv/${id}/credits?api_key=${API_KEY}`
-      )
-
-      setCast(castRes.data.cast.slice(0,10))
-
-      const similarRes = await api.get(
-        `/tv/${id}/similar?api_key=${API_KEY}`
-      )
-
-      setSimilar(similarRes.data.results.slice(0,12))
-
-    } catch(err){
-      console.log(err)
-    }
-
-  }
+  const [show, setShow] = useState<MediaDetails | null>(null)
+  const [cast, setCast] = useState<CastMember[]>([])
+  const [similar, setSimilar] = useState<MediaSummary[]>([])
 
   useEffect(()=>{
-    fetchShow()
+    let ignore = false;
+
+    const fetchShow = async () => {
+      try {
+        const [showRes, castRes, similarRes] = await Promise.all([
+          api.get<MediaDetails>(`/tv/${id}?api_key=${API_KEY}`),
+          api.get<{ cast: CastMember[] }>(`/tv/${id}/credits?api_key=${API_KEY}`),
+          api.get<{ results: MediaSummary[] }>(`/tv/${id}/similar?api_key=${API_KEY}`)
+        ]);
+
+        if (ignore) {
+          return;
+        }
+
+        setShow(showRes.data);
+        setCast(castRes.data.cast.slice(0, 10));
+        setSimilar(similarRes.data.results.slice(0, 12));
+      } catch(err){
+        console.log(err)
+      }
+    };
+
+    void fetchShow();
+
+    return () => {
+      ignore = true;
+    };
   },[id])
 
  if (!show) {
@@ -99,7 +98,7 @@ const TvDetails = () => {
 
             <div className="flex gap-2 mt-4 flex-wrap">
 
-              {show.genres?.map((g:any)=>(
+              {show.genres?.map((g: Genre)=>(
                 <span
                   key={g.id}
                   className="px-3 py-1 bg-zinc-800 rounded-full text-sm"

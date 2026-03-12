@@ -5,6 +5,7 @@ import api from "../utils/axiosConfig/axiosConf"
 import useInfiniteMovies from "../hooks/useInfinite"
 import InfiniteScroll from "react-infinite-scroll-component"
 import Loader from "../components/Loader"
+import type { MediaSummary, SearchResult } from "../types/media"
 
 const Search = () => {
 
@@ -12,7 +13,7 @@ const Search = () => {
 
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<any[]>([])
+  const [results, setResults] = useState<SearchResult[]>([])
 
   const debouncedValue = useDebounce(query, 500)
 
@@ -33,8 +34,8 @@ const Search = () => {
           `/search/multi?query=${encodeURIComponent(debouncedValue)}&api_key=${import.meta.env.VITE_API_KEY}`
         )
 
-        const filtered = res.data.results.filter(
-          (item:any) => item.media_type !== "person"
+        const filtered = (res.data.results as SearchResult[]).filter(
+          (item) => item.media_type !== "person"
         )
 
         setResults(filtered)
@@ -101,7 +102,7 @@ const Search = () => {
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 
-              {results.map((item:any)=>(
+              {results.map((item) =>(
                 <Link
                   key={item.id}
                   to={`/${item.media_type}/${item.id}`}
@@ -158,7 +159,7 @@ const Search = () => {
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-10">
 
-              {movies.map((movie:any)=>(
+              {movies.map((movie: MediaSummary)=>(
                 <Link
                   key={movie.id}
                   to={`/movie/${movie.id}`}

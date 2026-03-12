@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import {type RootState } from "../redux/store"
 import { Link } from "react-router-dom"
 import { toggleFavorite } from "../redux/slices/favorites"
+import type { MediaSummary } from "../types/media"
 
 type MovieCategory =
   | "trending"
@@ -48,7 +49,7 @@ const MovieCards: React.FC<Props> = ({ title, category, type }) => {
 
         <div className="flex px-8 py-4 overflow-x-auto scrollbar-hide scroll-smooth gap-3">
 
-          {items?.map((item:any)=>(
+          {items?.map((item: MediaSummary)=>(
 
             <div
               key={item.id}

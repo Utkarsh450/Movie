@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useEffectEvent } from "react";
 import { useDispatch } from "react-redux";
 import api from "../utils/axiosConfig/axiosConf";
 import { setTopRated } from "../redux/slices/movieSlice";
@@ -9,17 +9,17 @@ const useTopRatedMovies = () => {
 
   const dispatch = useDispatch();
 
-  const getTopRatedMovies = async () => {
+  const getTopRatedMovies = useEffectEvent(async () => {
 
     const res = await api.get(
       `/movie/top_rated?api_key=${API_KEY}`
     );
 
     dispatch(setTopRated(res.data.results));
-  };
+  });
 
   useEffect(() => {
-    getTopRatedMovies();
+    void getTopRatedMovies();
   }, []);
 
 };

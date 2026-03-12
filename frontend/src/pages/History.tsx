@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from "react-redux"
-import { RootState } from "../redux/store"
+import { type RootState } from "../redux/store"
 import { clearHistory } from "../redux/slices/historySlice"
 import { Link } from "react-router-dom"
 
 interface HistoryItem {
   id: number
-  poster_path: string
+  poster_path: string | null
   title?: string
   name?: string
   media_type: "movie" | "tv"

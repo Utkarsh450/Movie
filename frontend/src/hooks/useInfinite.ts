@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../utils/axiosConfig/axiosConf";
+import type { MediaSummary } from "../types/media";
 
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  backdrop_path: string;
-  overview: string;
-  vote_average: number;
-  release_date: string;
-}
+type Movie = MediaSummary;
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
@@ -19,7 +12,10 @@ const useInfiniteMovies = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
+    if (!hasMore) {
+      return;
+    }
 
     try {
 
@@ -41,13 +37,17 @@ const useInfiniteMovies = () => {
       console.error("Fetch movies failed", err);
     }
 
-  };
+  }, [hasMore, page]);
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    const timer = window.setTimeout(() => {
+      void fetchMovies();
+    }, 0);
 
-  return { movies, setMovies, fetchMovies, hasMore };
+    return () => window.clearTimeout(timer);
+  }, [fetchMovies]);
+
+  return { movies, fetchMovies, hasMore };
 };
 
 export default useInfiniteMovies;

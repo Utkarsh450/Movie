@@ -4,6 +4,7 @@ import api from "../utils/axiosConfig/axiosConf"
 import { useDispatch } from "react-redux"
 import { addHistory } from "../redux/slices/historySlice"
 import Loader from "../components/Loader"
+import type { CastMember, Genre, MediaDetails, MediaSummary } from "../types/media"
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -14,39 +15,39 @@ const MovieDetails = () => {
 
   const mediaType = type === "tv" ? "tv" : "movie"
 
-  const [movie, setMovie] = useState<any>(null)
-  const [cast, setCast] = useState<any[]>([])
-  const [similar, setSimilar] = useState<any[]>([])
-
-  const fetchMovie = async () => {
-
-    try {
-
-      const [movieRes, castRes, similarRes] = await Promise.all([
-
-        api.get(`/${mediaType}/${id}?api_key=${API_KEY}`),
-
-        api.get(`/${mediaType}/${id}/credits?api_key=${API_KEY}`),
-
-        api.get(`/${mediaType}/${id}/similar?api_key=${API_KEY}`)
-
-      ])
-
-      setMovie(movieRes.data)
-
-      setCast(castRes.data.cast.slice(0, 10))
-
-      setSimilar(similarRes.data.results.slice(0, 12))
-
-    } catch (err) {
-      console.log(err)
-    }
-
-  }
+  const [movie, setMovie] = useState<MediaDetails | null>(null)
+  const [cast, setCast] = useState<CastMember[]>([])
+  const [similar, setSimilar] = useState<MediaSummary[]>([])
 
   useEffect(() => {
-    fetchMovie()
-  }, [id])
+    let ignore = false;
+
+    const fetchMovie = async () => {
+      try {
+        const [movieRes, castRes, similarRes] = await Promise.all([
+          api.get<MediaDetails>(`/${mediaType}/${id}?api_key=${API_KEY}`),
+          api.get<{ cast: CastMember[] }>(`/${mediaType}/${id}/credits?api_key=${API_KEY}`),
+          api.get<{ results: MediaSummary[] }>(`/${mediaType}/${id}/similar?api_key=${API_KEY}`)
+        ]);
+
+        if (ignore) {
+          return;
+        }
+
+        setMovie(movieRes.data);
+        setCast(castRes.data.cast.slice(0, 10));
+        setSimilar(similarRes.data.results.slice(0, 12));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    void fetchMovie();
+
+    return () => {
+      ignore = true;
+    };
+  }, [id, mediaType])
 
   useEffect(() => {
 
@@ -116,7 +117,7 @@ const MovieDetails = () => {
 
             <div className="flex gap-2 mt-4 flex-wrap">
 
-              {movie.genres?.map((g:any) => (
+              {movie.genres?.map((g: Genre) => (
 
                 <span
                   key={g.id}

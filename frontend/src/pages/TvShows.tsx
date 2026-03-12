@@ -1,99 +1,80 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import useTrendingTV from "../hooks/useTrendingTV";
 import MovieCards from "../components/MovieCards";
-import type { RootState } from "../redux/store";
 import usePopularTV from "../hooks/usePopularTV";
 import useTopRatedTV from "../hooks/useTopRatedTV";
-
-interface TVShow {
-  id: number;
-  name: string;
-  overview: string;
-  backdrop_path: string;
-  poster_path: string;
-  vote_average: number;
-  first_air_date: string;
-}
+import useTrendingTV from "../hooks/useTrendingTV";
+import type { RootState } from "../redux/store";
+import type { MediaSummary } from "../types/media";
 
 const TvShows = () => {
-
   useTrendingTV();
   usePopularTV();
   useTopRatedTV();
 
-  const trending = useSelector(
-    (state: RootState) => state.tv.trending
-  );
-
-  const [show, setShow] = useState<TVShow | null>(null);
+  const trending = useSelector((state: RootState) => state.tv.trending);
+  const [show, setShow] = useState<MediaSummary | null>(null);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (trending.length === 0) {
+        setShow(null);
+        return;
+      }
 
-    if (trending.length > 0) {
+      const filtered = trending.filter((item) => item.backdrop_path);
 
-      const filtered = trending.filter(
-        (s: TVShow) => s.backdrop_path
-      );
+      if (filtered.length === 0) {
+        setShow(null);
+        return;
+      }
 
-      const random =
-        filtered[Math.floor(Math.random() * filtered.length)];
+      const randomIndex = Math.floor(Math.random() * filtered.length);
+      setShow(filtered[randomIndex]);
+    }, 0);
 
-      setShow(random);
-    }
-
+    return () => window.clearTimeout(timer);
   }, [trending]);
 
   return (
-    <div className="w-full flex font-[satoshi] flex-col bg-black">
-
-      {show && (
-
-        <div className="relative w-full h-[80vh]">
-
-          <img loading="lazy"
+    <div className="flex w-full flex-col bg-black font-[satoshi]">
+      {show ? (
+        <div className="relative h-[80vh] w-full">
+          <img
+            loading="lazy"
             src={`https://image.tmdb.org/t/p/original${show.backdrop_path}`}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
 
-          <div className="relative z-10 h-full flex items-center px-20 text-white">
-
+          <div className="relative z-10 flex h-full items-center px-20 text-white">
             <div className="max-w-2xl flex flex-col gap-4">
-
-              <h1 className="text-6xl font-bold">
-                {show.name}
-              </h1>
+              <h1 className="text-6xl font-bold">{show.name ?? show.title}</h1>
 
               <p className="text-blue-400">
-                ⭐ {show.vote_average.toFixed(1)}
+                Rating {(show.vote_average ?? 0).toFixed(1)}
               </p>
 
               <p className="text-gray-300">
-                {show.first_air_date}
+                {show.first_air_date ?? show.release_date}
               </p>
 
-              <p className="text-gray-300 text-lg">
-                {show.overview.slice(0,200)}...
+              <p className="text-lg text-gray-300">
+                {(show.overview ?? "").slice(0, 200)}...
               </p>
 
-              <button className="px-8 py-3 bg-white text-black rounded-lg w-fit">
-                ▶ Watch Now
+              <button className="w-fit rounded-lg bg-white px-8 py-3 text-black">
+                Watch Now
               </button>
-
             </div>
-
           </div>
-
         </div>
-      )}
+      ) : null}
 
-      {/* TV Rows */}
       <MovieCards title="Trending Shows" category="trending" type="tv" />
       <MovieCards title="Popular Shows" category="popular" type="tv" />
       <MovieCards title="Top Rated Shows" category="topRated" type="tv" />
-
     </div>
   );
 };
